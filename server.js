@@ -31,7 +31,7 @@ app.get('/location', (request, response) => {
 })
 
 // Do not comment in until you have locations in the DB
-app.get('/weather', getWeather);
+// app.get('/weather', getWeather);
 
 // Do not comment in until weather is working
 // app.get('/meetups', getMeetups);
@@ -50,10 +50,10 @@ function Location(query, res) {
   this.longitude = res.geometry.location.lng;
 }
 
-function Weather(day) {
-  this.forecast = day.summary;
-  this.time = new Date(day.time * 1000).toString().slice(0, 15);
-}
+// function Weather(day) {
+//   this.forecast = day.summary;
+//   this.time = new Date(day.time * 1000).toString().slice(0, 15);
+// }
 
 // function Meetup(meetup) {
 //   this.tableName = 'meetups';
@@ -90,7 +90,7 @@ function getLocation(query) {
         // Otherwise get the location information from the Google API
       } else {
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
-console.log(url);
+// console.log(url);
         return superagent.get(url)
           .then(data => {
             console.log('FROM API line 90');
@@ -126,71 +126,70 @@ console.log(url);
     });
 }
 // -------------------------*HELPER-FUNCTION:WEATHER*----------------------------
-function getWeather(request, response) {
-  const SQL = `SELECT * FROM weathers WHERE location_id=$1`;
-  const values =[request.query.data.id];
+// function getWeather(request, response) {
+//   const SQL = `SELECT * FROM weathers WHERE location_id=$1`;
+//   const values =[request.query.data.id];
 
-  return client.query (SQL, values)
-    .then (result => {
-      if(results.rowCount > 0){
-        console.log('from SQL');
-        response.send(result.row[0]);
-      } else {  
-        const url =`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${request.query.data.latitude},${request.query.data.longitude}`;
+//   return client.query (SQL, values)
+//     .then (result => {
+//       if(results.rowCount > 0){
+//         console.log('from SQL');
+//         response.send(result.row[0]);
+//       } else {  
+//         const url =`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${request.query.data.latitude},${request.query.data.longitude}`;
 
-        superagent.get(url)
-          .then (result =>{
-            const weatherSummaries =result.body.daily.data.map(day => {
-              const summary = new Weather(day);
-              return summary;
-          });
-        let newSQL =`INSERT INTO weathers(forecast,time,location_id) VALUES($1,$2$3);`;
-        // console.log ('148', weatherSummaries)//array of objects
-         weatherSummaries.forEach( summary =>{
-            let newValues = Object.values(summary);
-            newValues.push(request.query.data.id);
-            return client.query(newSQL, newValues)
-            .catch(console.error);
-       })
-       respones.send(weatherSummaries);
-    })
-     .catch(error =>handleError(error,response));
-  }
-})
-}
+//         superagent.get(url)
+//           .then (result =>{
+//             const weatherSummaries =result.body.daily.data.map(day => {
+//               const summary = new Weather(day);
+//               return summary;
+//           });
+//         let newSQL =`INSERT INTO weathers(forecast,time,location_id) VALUES($1,$2$3);`;
+//         // console.log ('148', weatherSummaries)//array of objects
+//          weatherSummaries.forEach( summary =>{
+//             let newValues = Object.values(summary);
+//             newValues.push(request.query.data.id);
+//             return client.query(newSQL, newValues)
+//             .catch(console.error);
+//        })
+//        respones.send(weatherSummaries);
+//     })
+//      .catch(error =>handleError(error,response));
+//   }
+// })
+// }
 
 
 // -------------------------*HELPER-FUNCTION:MEETUPS*----------------------------
-function getMeetups(request, response) {
- const SQL = `SELECT * FROM meetups WHERE location_id=$1`;
- const values =[request.query.data.id];
+// function getMeetups(request, response) {
+//  const SQL = `SELECT * FROM meetups WHERE location_id=$1`;
+//  const values =[request.query.data.id];
 
- return client.query (SQL, values)
-    .then (result => {
-      if(results.rowCount > 0){
-        console.log('from SQL');
-        response.send(result.row[0]);
-      } else{
-         const url = `https://api.meetup.com/find/upcoming_events?&sign=true&photo-host=public&lon=$         {request.query.data.longitude}&page=20&lat=${request.query.data.latitude}&key=${process.env.MEETUP_API_KEY}`
+//  return client.query (SQL, values)
+//     .then (result => {
+//       if(results.rowCount > 0){
+//         console.log('from SQL');
+//         response.send(result.row[0]);
+//       } else{
+//          const url = `https://api.meetup.com/find/upcoming_events?&sign=true&photo-host=public&lon=${request.query.data.longitude}&page=20&lat=${request.query.data.latitude}&key=${process.env.MEETUP_API_KEY}`
 
-      superagent.get(url)
-        .then(result => {
-          const meetups = result.body.events.map(meetups => {
-            const event = new Meetups(meetup);
-            return event;
-          });
-
-       let newSQL =`INSERT INTO meetups(link,name,creation_date,host,location_id,) VALUES($1,$2$3);`;
-        //console.log ('148', meetupsSummaries)//array of objects
-         meetupsSummaries.forEach(summary =>{
-           let newValues = Object.values(summary);
-           newValues.push(request.query.data.id);
-           return client.query(newSQL, newValues);
-          // .catch(console.error);
-        })
-        respones.send(meetupsSummaries);
-      })
-       .catch(error =>handleError(error,response));
-  }
-})
-}
+//       superagent.get(url)
+//         .then(result => {
+//           const meetupsSummaries = result.body.events.map(meetup => {
+//             const event = new Meetups(meetup);
+//             return event;
+//           });
+//         let newSQL =`INSERT INTO meetups(link,name,creation_date,host,location_id,) VALUES($1,$2$3);`;
+//           //console.log ('148', meetupsSummaries)//array of objects
+//           meetupsSummaries.forEach(summary =>{
+//             let newValues = Object.values(summary);
+//             newValues.push(request.query.data.id);
+//             return client.query(newSQL, newValues);
+//             //.catch(console.error);
+//         })
+//         respones.send(meetupsSummaries);
+//       })
+//        .catch(error =>handleError(error,response));
+//   }
+// })
+// }
