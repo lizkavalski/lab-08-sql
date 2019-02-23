@@ -29,8 +29,6 @@ app.get('/location', (request, response) => {
     })
     .catch(error => handleError(error, response));
 
-
-
 })
 
 // Do not comment in until you have locations in the DB
@@ -38,6 +36,15 @@ app.get('/weather', getWeather);
 
 // Do not comment in until weather is working
 app.get('/meetups', getMeetups);
+
+//Yelp
+// app.get('/yelp', getYelp);
+
+// //Movies
+// app.get('/movie', getMoive);
+
+// //hiking
+app.get('/trails', getTrails);
 
 // Make sure the server is listening for requests
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
@@ -66,7 +73,39 @@ function Meetup(meetup) {
   this.host = meetup.group.who;
 //   this.created_at = Date.now();
 }
+// //yelp
+// function Yelp(yelp){
+//   this.url=:
+//   this.name=;
+//   this.rating=;
+//   this.price=;
+//   this.image_url=;
+// }
+//movies data--pulled from the index.html
+// function Movie{
+//   this.title=;
+//   this.released_on=;
+//   this.total_votes=;
+//   this.avarage_votes=;
+//   this.popularity=;
+//   this.image_url=;
+//   this.overview=;
+// }
 
+
+//hiking--infomation pulled from the index.html
+function Trail(trials){
+  this.trail_url =trails.url; 
+  this.location=trails.location
+  this.name= trails.name ;
+  this.length=trails.length;
+  this.condition_date=new Date(trails.conditionDate.split(' ')[0]);
+  this.condition_time=new Date(trails.conditionDate.split(' ')[1]);
+  this.condition=trails.condition.details;
+  this.stars= trails.stars;
+  this.star_votes=trials.starVoters;
+  this.summary=trials.summary;
+ }
 // *********************
 // HELPER FUNCTIONS
 // *********************
@@ -140,7 +179,7 @@ function getWeather(request, response) {
         response.send(result.rows);
       } else {  
         const url =`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${request.query.data.latitude},${request.query.data.longitude}`;
-console.log(url);
+
         superagent.get(url)
           .then (result =>{
             const weatherSummaries =result.body.daily.data.map(day => {
@@ -148,7 +187,7 @@ console.log(url);
               return summary;
           });
         let newSQL =`INSERT INTO weathers(forecast,time,location_id) VALUES($1,$2,$3);`;
-        console.log ('148', weatherSummaries)//array of objects
+    
         weatherSummaries.forEach( summary =>{
             let newValues = Object.values(summary);
             newValues.push(request.query.data.id);
@@ -193,6 +232,40 @@ function getMeetups(request, response) {
         response.send(meetupsSummaries);
       })
        .catch(error =>handleError(error,response));
+  }
+})
+}
+//--------------------------Hiking------------------------------
+function getTrails(request, response) {
+  const SQL = `SELECT * FROM trials WHERE location_id=$1;`;
+  const values =[request.query.data.id];
+
+  return client.query (SQL, values)
+    .then (result => {
+      if(result.rowCount > 0){
+        console.log('from SQL');
+        response.send(result.rows);
+      } else {  
+        const url =`https://www.hikingproject.com/data/get-trails?url&name&location&length&conditiondate&condition&stars&starVotes&summary&lat=${request.query.data.latitude}&lon=${request.query.data.longitude}0&maxDistance=10&key=${process.env.TRAILS_API_KEY}`
+console.log(url);
+
+        superagent.get(url)
+          .then (result =>{
+            const trailSummaries =result.body.trails.map(trial => {
+              const hike = new Trail(trial);
+              return hike;
+          });
+        let newSQL =`INSERT INTO trails (trail_url,name,location,length,condition_date,condition_time,condition,stars,star_votes,summary,location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`;
+        console.log ('148', trials)//array of objects
+        trailSummaries.forEach( trail =>{
+            let newValues = Object.values(trail);
+            newValues.push(request.query.data.id);
+            return client.query(newSQL, newValues)
+            // .catch(console.error);
+       })
+       response.send(trailSummaries);
+    })
+     .catch(error =>handleError(error,response));
   }
 })
 }

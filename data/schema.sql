@@ -25,3 +25,18 @@ CREATE TABLE IF NOT EXISTS meetups (
     location_id INTEGER NOT NULL,
     FOREIGN KEY (location_id) REFERENCES locations (id)
 );
+CREATE TABLE IF NOT EXISTS trials (
+    id SERIAL PRIMARY KEY,
+    trail_url VARCHAR (255),
+    name VARCHAR(255),
+    locations VARCHAR(225),
+    length NUMERIC(2,1),
+    condition_date CHAR(15),
+    condition_time CHAR(15),
+    condition VARCHAR (255),
+    stars NUMERIC (2,1),
+    stars_votes INTEGER NOT NULL,
+    summary VARCHAR (255),
+    location_id INTEGER NOT NULL,
+    FOREIGN KEY (location_id) REFERENCES locations (id)
+);
