@@ -1,4 +1,4 @@
-DROP TABLE weathers, meetups, locations;
+DROP TABLE weathers, meetups, locations, trials, movies,yelp;
 
 CREATE TABLE IF NOT EXISTS locations (
     id SERIAL PRIMARY KEY,
@@ -37,6 +37,28 @@ CREATE TABLE IF NOT EXISTS trials (
     stars NUMERIC (2,1),
     stars_votes INTEGER NOT NULL,
     summary VARCHAR (255),
+    location_id INTEGER NOT NULL,
+    FOREIGN KEY (location_id) REFERENCES locations (id)
+);
+CREATE TABLE IF NOT EXISTS movies (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR (255),
+    released_on VARCHAR(255),
+    total_votes INTEGER NOT NULL,
+    avarage_votes NUMERIC (2,1),
+    popularity VARCHAR(225),
+    image_url VARCHAR (255),
+    overview VARCHAR (255),
+    location_id INTEGER NOT NULL,
+    FOREIGN KEY (location_id) REFERENCES locations (id)
+);
+CREATE TABLE IF NOT EXISTS movies (
+    id SERIAL PRIMARY KEY,
+    url VARCHAR (255),
+    name VARCHAR(255),
+    rating NUMERIC (2,1),
+    price VARCHAR(3,2),
+    image_url VARCHAR (255),
     location_id INTEGER NOT NULL,
     FOREIGN KEY (location_id) REFERENCES locations (id)
 );
