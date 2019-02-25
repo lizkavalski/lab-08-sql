@@ -41,7 +41,7 @@ app.get('/meetups', getMeetups);
 // app.get('/yelp', getYelp);
 
 // //Movies
-// app.get('/movie', getMoive);
+//  app.get('/movie', getMoive);
 
 // //hiking
 app.get('/trails', getTrails);
@@ -82,7 +82,7 @@ function Meetup(meetup) {
 //   this.image_url=;
 // }
 //movies data--pulled from the index.html
-// function Movie{
+// function Movie(movies){
 //   this.title=;
 //   this.released_on=;
 //   this.total_votes=;
@@ -269,3 +269,69 @@ console.log(url);
   }
 })
 }
+// ---------------------------Movies----------------------
+// function getMoive(request, response) {
+//   const SQL = `SELECT * FROM meetups WHERE location_id=$1;`;
+//   const values =[request.query.data.id];
+ 
+//   return client.query (SQL, values)
+//      .then (result => {
+//        if(result.rowCount > 0){
+//          console.log('from SQL');
+//          response.send(result.rows);
+//        } else{
+//           const url = 
+ 
+//        superagent.get(url)
+//          .then(result => {
+//            const movieSummaries = result.body.events.map(movies=> {
+//              const movies = new Movie(movies);
+//              return movies;
+//            });
+//          let newSQL =`INSERT INTO meetups(title, released_on, total_votes, avarage_votes, popularity, image_url, overview, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);`;
+//            //console.log ('148', meetupsSummaries)//array of objects
+//            movieSummaries.forEach(summary =>{
+//              let newValues = Object.values(summary);
+//              newValues.push(request.query.data.id);
+//              return client.query(newSQL, newValues);
+//              //.catch(console.error);
+//          })
+//          response.send(movieSummaries);
+//        })
+//         .catch(error =>handleError(error,response));
+//    }
+//  })
+//  }
+//-------------------------------Yelp-------------------------------------------------
+//function getYelp(request, response) {
+  //   const SQL = `SELECT * FROM meetups WHERE location_id=$1;`;
+  //   const values =[request.query.data.id];
+   
+  //   return client.query (SQL, values)
+  //      .then (result => {
+  //        if(result.rowCount > 0){
+  //          console.log('from SQL');
+  //          response.send(result.rows);
+  //        } else{
+  //           const url = 
+   
+  //        superagent.get(url)
+  //          .then(result => {
+  //            const yelpSummaries = result.body.events.map(movies=> {
+  //              const review = new Yelp(yelp);
+  //              return review;
+  //            });
+  //          let newSQL =`INSERT INTO meetups(url, name, rating, price, image_url, location_id) VALUES($1,$2,$3,$4,$5,$6,$7);`;
+  //            //console.log ('148', meetupsSummaries)//array of objects
+  //            movieSummaries.forEach(summary =>{
+  //              let newValues = Object.values(summary);
+  //              newValues.push(request.query.data.id);
+  //              return client.query(newSQL, newValues);
+  //              //.catch(console.error);
+  //          })
+  //          response.send(movieSummaries);
+  //        })
+  //         .catch(error =>handleError(error,response));
+  //    }
+  //  })
+  //  }
