@@ -94,17 +94,17 @@ function Meetup(meetup) {
 
 
 //hiking--infomation pulled from the index.html
-function Trail(trials){
+function Trail(trails){
   this.trail_url =trails.url; 
-  this.location=trails.location
-  this.name= trails.name ;
+  this.location=trails.location;
+  this.name= trails.name;
   this.length=trails.length;
   this.condition_date=new Date(trails.conditionDate.split(' ')[0]);
   this.condition_time=new Date(trails.conditionDate.split(' ')[1]);
-  this.condition=trails.condition.details;
+  this.condition=trails.conditionDetails;
   this.stars= trails.stars;
-  this.star_votes=trials.starVoters;
-  this.summary=trials.summary;
+  this.stars_votes=trails.starVoters;
+  this.summary=trails.summary;
  }
 // *********************
 // HELPER FUNCTIONS
@@ -237,7 +237,7 @@ function getMeetups(request, response) {
 }
 //--------------------------Hiking------------------------------
 function getTrails(request, response) {
-  const SQL = `SELECT * FROM trials WHERE location_id=$1;`;
+  const SQL = `SELECT * FROM trails WHERE location_id=$1;`;
   const values =[request.query.data.id];
 
   return client.query (SQL, values)
@@ -251,14 +251,14 @@ console.log(url);
 
         superagent.get(url)
           .then (result =>{
-            const trailSummaries =result.body.trails.map(trial => {
-              const hike = new Trail(trial);
+            const trailSummaries =result.body.trails.map(trails => {
+              const hike = new Trail(trails);
               return hike;
           });
-        let newSQL =`INSERT INTO trails (trail_url,name,location,length,condition_date,condition_time,condition,stars,star_votes,summary,location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`;
-        console.log ('148', trials)//array of objects
-        trailSummaries.forEach( trail =>{
-            let newValues = Object.values(trail);
+        let newSQL =`INSERT INTO trails (trail_url,name,location,length,condition_date,condition_time,condition,stars,stars_votes,summary,location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`;
+        //console.log ('148', trails)//array of objects
+        trailSummaries.forEach( summary =>{
+            let newValues = Object.values(summary);
             newValues.push(request.query.data.id);
             return client.query(newSQL, newValues)
             // .catch(console.error);
@@ -288,7 +288,7 @@ console.log(url);
 //              const movies = new Movie(movies);
 //              return movies;
 //            });
-//          let newSQL =`INSERT INTO meetups(title, released_on, total_votes, avarage_votes, popularity, image_url, overview, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);`;
+//          let newSQL =`INSERT INTO movies(title, released_on, total_votes, avarage_votes, popularity, image_url, overview, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);`;
 //            //console.log ('148', meetupsSummaries)//array of objects
 //            movieSummaries.forEach(summary =>{
 //              let newValues = Object.values(summary);
