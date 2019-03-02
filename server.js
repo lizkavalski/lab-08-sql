@@ -269,7 +269,7 @@ console.log(url);
   }
 })
 }
-// ---------------------------Movies----------------------
+//---------------------------Movies----------------------
 // function getMoive(request, response) {
 //   const SQL = `SELECT * FROM meetups WHERE location_id=$1;`;
 //   const values =[request.query.data.id];
