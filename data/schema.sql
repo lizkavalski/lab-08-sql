@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS trails (
     location VARCHAR(225),
     length NUMERIC(2,1),
     condition_date VARCHAR(255),
-    condition_time VARCHAR(255),
+    condition_time VARCHAR(15),
     condition VARCHAR (255),
     stars NUMERIC (2,1),
     stars_votes VARCHAR(255),
@@ -41,16 +41,16 @@ CREATE TABLE IF NOT EXISTS trails (
     FOREIGN KEY (location_id) REFERENCES locations (id)
 );
 CREATE TABLE IF NOT EXISTS movies (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR (255),
-    released_on VARCHAR(255),
-    total_votes INTEGER NOT NULL,
-    avarage_votes NUMERIC (2,1),
-    popularity VARCHAR(225),
-    image_url VARCHAR (255),
-    overview VARCHAR (255),
-    location_id INTEGER NOT NULL,
-    FOREIGN KEY (location_id) REFERENCES locations (id)
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255),
+  overview VARCHAR(1000),
+  average_votes NUMERIC(5,2),
+  total_votes INTEGER,
+  image_url VARCHAR(255),
+  popularity NUMERIC(3,1),
+  released_on VARCHAR(255),
+  location_id INTEGER NOT NULL,
+  FOREIGN KEY (location_id) REFERENCES locations (id)
 );
 CREATE TABLE IF NOT EXISTS yelp (
     id SERIAL PRIMARY KEY,
