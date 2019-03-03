@@ -21,7 +21,12 @@ Architecture
 The site will be using JS server, express,pg, core, dotenv and superagant.Then also a .gitgnore and a .eslintrc.json file. The use of nodemon for feedback on errors.
 
 Change Log
-02-26-2019 10:25am Proof of life 02-26-2019 10:35am a form add to index.ejs 02-27-2019 9:30am Now shows search results 02-27-2019 10:50am If an error orrurs then show a error veiw to the client.
+02-20-2019 9:30am datbase added
+02-20-2019 9:50am lacation
+02-20-2019 6:00pm weather
+02-20-2019 5:00pm Meetups
+02-27-2019 6:00pm Deploment on Heruko
+02-28-2019 5:30pm Trials
 
 Credits and Collaborations
 DarkSkys, Google maps, Meetups, Yelp, Hiking Project, Movie Database, and codefellow/seattle-301d44
@@ -67,7 +72,7 @@ Estimate of time needed to complete: _ 1 hr____
 
 Start time: __9:00am___
 
-Finish time: __12:00pm___
+Finish time: __5:00pm___
 
 Actual time needed to complete: __3 hrs___
 
