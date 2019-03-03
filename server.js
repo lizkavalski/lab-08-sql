@@ -38,10 +38,10 @@ app.get('/weather', getWeather);
 app.get('/meetups', getMeetups);
 
 //Yelp
-// app.get('/yelp', getYelp);
+//app.get('/yelp', getYelp);
 
 // //Movies
-//  app.get('/movie', getMoive);
+app.get('/movie', getMovies);
 
 // //hiking
 app.get('/trails', getTrails);
@@ -66,31 +66,30 @@ function Weather(day) {
 }
 
 function Meetup(meetup) {
-//   this.tableName = 'meetups';
+
   this.link = meetup.link;
   this.name = meetup.group.name;
   this.creation_date = new Date(meetup.group.created).toString().slice(0, 15);
   this.host = meetup.group.who;
-//   this.created_at = Date.now();
 }
 // //yelp
 // function Yelp(yelp){
-//   this.url=:
-//   this.name=;
-//   this.rating=;
-//   this.price=;
-//   this.image_url=;
-// }
+//   this.url=yelp.url;
+//   this.name=yelp.name;
+//   this.rating=yelp.rating;
+//   this.price=yelp.price;
+//   this.image_url=yelp.image_url;
+//}
 //movies data--pulled from the index.html
-// function Movie(movies){
-//   this.title=;
-//   this.released_on=;
-//   this.total_votes=;
-//   this.avarage_votes=;
-//   this.popularity=;
-//   this.image_url=;
-//   this.overview=;
-// }
+function Movie(movie){
+  this.title=movie.title;
+  this.released_on=movie.release_date;
+  this.total_votes=movie.vote_count;
+  this.avarage_votes=movie.vote_average;
+  this.popularity=movie.popularity;
+  this.image_url=`https://image.tmdb.org/t/p/original${movie.backdrop_path}`;
+  this.overview=movie.overview;
+}
 
 
 //hiking--infomation pulled from the index.html
@@ -126,7 +125,6 @@ function getLocation(query) {
     .then(result => {
       // Check to see if the location was found and return the results
       if (result.rowCount > 0) {
-        console.log('From SQL');
         return result.rows[0];
 
         // Otherwise get the location information from the Google API
@@ -135,25 +133,20 @@ function getLocation(query) {
 // console.log(url);
         return superagent.get(url)
           .then(data => {
-            console.log('FROM API line 90');
-            // Throw an error if there is a problem with the API request
             if (!data.body.results.length) { throw 'no Data' }
-
             // Otherwise create an instance of Location
             else {
               let location = new Location(query, data.body.results[0]);
-              console.log('98', location);
+            
 
               // Create a query string to INSERT a new record with the location data
               let newSQL = `INSERT INTO locations (search_query, formatted_query, latitude, longitude) VALUES ($1, $2, $3, $4) RETURNING id;`;
-              console.log('102', newSQL)
               let newValues = Object.values(location);
-              console.log('104', newValues)
 
               // Add the record to the database
               return client.query(newSQL, newValues)
                 .then(result => {
-                  console.log('108', result.rows);
+            
                   // Attach the id of the newly created record to the instance of location.
                   // This will be used to connect the location to the other databases.
                   console.log('114', result.rows[0].id)
@@ -175,7 +168,7 @@ function getWeather(request, response) {
   return client.query (SQL, values)
     .then (result => {
       if(result.rowCount > 0){
-        console.log('from SQL');
+       
         response.send(result.rows);
       } else {  
         const url =`https://api.darksky.net/forecast/${process.env.WEATHER_API_KEY}/${request.query.data.latitude},${request.query.data.longitude}`;
@@ -210,7 +203,7 @@ function getMeetups(request, response) {
  return client.query (SQL, values)
     .then (result => {
       if(result.rowCount > 0){
-        console.log('from SQL');
+       
         response.send(result.rows);
       } else{
          const url = `https://api.meetup.com/find/upcoming_events?&sign=true&photo-host=public&lon=${request.query.data.longitude}&page=20&lat=${request.query.data.latitude}&key=${process.env.MEETUP_API_KEY}`
@@ -222,12 +215,12 @@ function getMeetups(request, response) {
             return event;
           });
         let newSQL =`INSERT INTO meetups(link, name, creation_date, host, location_id) VALUES($1,$2,$3,$4,$5);`;
-          //console.log ('148', meetupsSummaries)//array of objects
+          
           meetupsSummaries.forEach(summary =>{
             let newValues = Object.values(summary);
             newValues.push(request.query.data.id);
             return client.query(newSQL, newValues);
-            //.catch(console.error);
+           
         })
         response.send(meetupsSummaries);
       })
@@ -243,11 +236,10 @@ function getTrails(request, response) {
   return client.query (SQL, values)
     .then (result => {
       if(result.rowCount > 0){
-        console.log('from SQL');
         response.send(result.rows);
       } else {  
         const url =`https://www.hikingproject.com/data/get-trails?url&name&location&length&conditiondate&condition&stars&starVotes&summary&lat=${request.query.data.latitude}&lon=${request.query.data.longitude}0&maxDistance=10&key=${process.env.TRAILS_API_KEY}`
-console.log(url);
+
 
         superagent.get(url)
           .then (result =>{
@@ -256,12 +248,12 @@ console.log(url);
               return hike;
           });
         let newSQL =`INSERT INTO trails (trail_url,name,location,length,condition_date,condition_time,condition,stars,stars_votes,summary,location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11);`;
-        //console.log ('148', trails)//array of objects
+  
         trailSummaries.forEach( summary =>{
             let newValues = Object.values(summary);
             newValues.push(request.query.data.id);
             return client.query(newSQL, newValues)
-            // .catch(console.error);
+          
        })
        response.send(trailSummaries);
     })
@@ -270,68 +262,76 @@ console.log(url);
 })
 }
 //---------------------------Movies----------------------
-// function getMoive(request, response) {
-//   const SQL = `SELECT * FROM meetups WHERE location_id=$1;`;
-//   const values =[request.query.data.id];
- 
-//   return client.query (SQL, values)
-//      .then (result => {
-//        if(result.rowCount > 0){
-//          console.log('from SQL');
-//          response.send(result.rows);
-//        } else{
-//           const url = 
- 
-//        superagent.get(url)
-//          .then(result => {
-//            const movieSummaries = result.body.events.map(movies=> {
-//              const movies = new Movie(movies);
-//              return movies;
-//            });
-//          let newSQL =`INSERT INTO movies(title, released_on, total_votes, avarage_votes, popularity, image_url, overview, location_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9);`;
-//            //console.log ('148', meetupsSummaries)//array of objects
-//            movieSummaries.forEach(summary =>{
-//              let newValues = Object.values(summary);
-//              newValues.push(request.query.data.id);
-//              return client.query(newSQL, newValues);
-//              //.catch(console.error);
-//          })
-//          response.send(movieSummaries);
-//        })
-//         .catch(error =>handleError(error,response));
-//    }
-//  })
-//  }
+function getMovies(request, response) {
+  const SQL = `SELECT * FROM movies WHERE location_id=$1`;
+  const values = [request.query.data.id];
+  console.log('213', values);
+  //Query the database
+  return client.query(SQL, values)
+    .then(result => {
+      if (result.rowCount > 0) {
+        console.log('From SQL');
+        response.send(result.rows);
+      } else {
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&language=en-US&query=${request.query.data.search_query}&page=1&include_adult=false`
+console.log(url)
+        superagent.get(url)
+          .then(data => {
+            const movieSummaries = data.body.results.map(movie => {
+              const event = new Movie(movie)
+              // console.log(event);
+              return event;
+            })
+            let newSQL = `INSERT INTO movies(title, overview, average_votes, total_votes, image_url, popularity, released_on, location_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`;
+
+            movieSummaries.forEach(summary => {
+              let newValues = Object.values(summary);
+              newValues.push(request.query.data.id);
+              //add record to database
+              return client.query(newSQL, newValues)
+                .catch(console.error);
+            })
+            response.send(movieSummary);
+          })
+          .catch(error => handleError(error, response));
+      }
+    })
+}
+
 //-------------------------------Yelp-------------------------------------------------
-//function getYelp(request, response) {
-  //   const SQL = `SELECT * FROM meetups WHERE location_id=$1;`;
-  //   const values =[request.query.data.id];
-   
-  //   return client.query (SQL, values)
-  //      .then (result => {
-  //        if(result.rowCount > 0){
-  //          console.log('from SQL');
-  //          response.send(result.rows);
-  //        } else{
-  //           const url = 
-   
-  //        superagent.get(url)
-  //          .then(result => {
-  //            const yelpSummaries = result.body.events.map(movies=> {
-  //              const review = new Yelp(yelp);
-  //              return review;
-  //            });
-  //          let newSQL =`INSERT INTO meetups(url, name, rating, price, image_url, location_id) VALUES($1,$2,$3,$4,$5,$6,$7);`;
-  //            //console.log ('148', meetupsSummaries)//array of objects
-  //            movieSummaries.forEach(summary =>{
-  //              let newValues = Object.values(summary);
-  //              newValues.push(request.query.data.id);
-  //              return client.query(newSQL, newValues);
-  //              //.catch(console.error);
-  //          })
-  //          response.send(movieSummaries);
-  //        })
-  //         .catch(error =>handleError(error,response));
-  //    }
-  //  })
-  //  }
+// function getYelp(request, response) {
+//   const SQL = `SELECT * FROM yelp WHERE location_id=$1`;
+//   const values = [request.query.data.id];
+//   console.log('305', values);
+//   //Query the database
+//   return client.query(SQL, values)
+//     .then(result => {
+//       if (result.rowCount > 0) {
+//         console.log('From SQL');
+//         response.send(result.rows);
+//       } else {
+//         // Call to yelp
+//         const url = `https://api.yelp.com/v3/businesses/search?location=${request.query.data.search_query}`;
+
+//         superagent.get(url)
+//           .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
+//           .then(result => {
+//             const yelpSummaries = result.body.businesses.map(yelp => {
+//               const event = new Yelp(yelp)
+//               // console.log('323', event);
+//               return event;
+//             })
+//             let newSQL = `INSERT INTO yelps(name, image_url, price, rating, url, location_id) VALUES ($1, $2, $3, $4, $5, $6)`;
+//             yelpSummaries.forEach(summary => {
+//               let newValues = Object.values(summary);
+//               newValues.push(request.query.data.id);
+//               //add record to database
+//               return client.query(newSQL, newValues)
+//                 .catch(console.error);
+//             })
+//             response.send(yelpSummary);
+//           })
+//           .catch(error => handleError(error, response));
+//       }
+//     })
+// }
