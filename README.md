@@ -1,6 +1,6 @@
 ## Liz-301-lab8
-## Author: Elizabeth Kavalski
-## Version: 
+ **Author**: Elizabeth Kavalski
+**Version**: 
   -1.0.0: Proof of life
   -1.0.1: Location to render on the page
   -1.0.1: Weather to render on the page
