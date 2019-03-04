@@ -1,6 +1,6 @@
-##liz-301-lab8
-Author: Elizabeth Kavalski
-Version: 
+## Liz-301-lab8
+ **Author**: Elizabeth Kavalski
+**Version**: 
   -1.0.0: Proof of life
   -1.0.1: Location to render on the page
   -1.0.1: Weather to render on the page
@@ -9,18 +9,18 @@ Version:
   -1.1.2: Weather information into the basebase.
   -1.1.1: Meetups to render on the page.
   -1.1.2: Hiking trails to render on the page.
-#Overview
+# Overview
   -To allow a user to search for a place and based on the search give the weather, restrunts, movies, Meetups, and hikes in the area. (This runs the backend of the appcation) 
 
-#Getting Started
+# Getting Started
 -At this point the steps that a user must take in order to build this app on their own machine and get it running is you will need to `git clone` this repo, then run a `npm i` to insteall the depenencies on to your local machine. You also need to clone `city-explorer-front-end` from codefellows/seattle-301d44 to run the front-end, as this apps is the back-end. Once the code is open on your machine open a new file name called `.env` as this file will store your port, and API infomation. 
 
 For testing run the `city-explorer-front-end`on `live-server`. Then open in a terminal the nodemon, and pqsl. The nodemon should say which port it listening to. the nodemon should match the port number that is set in the code. When the page open up type in `localhost:` and whichever port number is supposed to be listening to. It should change it view and ask for a location at that point type in a city name. Then based on the city the infomation should related weather, meetup, trails, movies, and restrants. 
 
-Architecture
+# Architecture
 The site will be using JS server, express,pg, core, dotenv and superagant.Then also a .gitgnore and a .eslintrc.json file. The use of nodemon for feedback on errors.
 
-Change Log
+# Change Log
 02-20-2019 9:30am datbase added
 02-20-2019 9:50am lacation
 02-20-2019 6:00pm weather
@@ -28,12 +28,12 @@ Change Log
 02-27-2019 6:00pm Deploment on Heruko
 02-28-2019 5:30pm Trials
 
-Credits and Collaborations
+# Credits and Collaborations
 DarkSkys, Google maps, Meetups, Yelp, Hiking Project, Movie Database, and codefellow/seattle-301d44
 
-LAB 8 FEATURES
+# LAB 8 FEATURES
 
-Number and name of feature:_2)_Making_of_the_database_(SQL)_and_show_on_the_webpage
+Number and name of feature:_1)_Making_of_the_database_(SQL)
 
 Estimate of time needed to complete: _10 mins____
 
