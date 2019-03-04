@@ -33,7 +33,7 @@ DarkSkys, Google maps, Meetups, Yelp, Hiking Project, Movie Database, and codefe
 
 # LAB 8 FEATURES
 
-Number and name of feature:_2)_Making_of_the_database_(SQL)_and_show_on_the_webpage
+Number and name of feature:_1)_Making_of_the_database_(SQL)
 
 Estimate of time needed to complete: _10 mins____
 
